@@ -32,13 +32,13 @@ jobs:
           submodules: recursive
 
       - name: Install Ninja
-        uses: llvm/actions/install-ninja@main
+        run: ${{ contains(matrix.os, 'macos') && 'brew install ninja' || contains(matrix.os, 'windows') && 'choco install ninja' || 'sudo apt-get install ninja-build' }}
 
       - name: Configure
         run: cmake -S . -B build/Debug -G Ninja -DCMAKE_BUILD_TYPE=Debug ${{ matrix.cmake_flags }}
 
       - name: Build
-        run: cmake --build build/Debug -- -j 4
+        run: cmake --build build/Debug -- -j `node -p 'os.cpus().length'`
 
       - name: Sanity Test
         run: ./build/Debug/veil --version
