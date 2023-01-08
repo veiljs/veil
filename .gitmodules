@@ -1,0 +1,9 @@
+[submodule "ext/quickjs/repo"]
+	path = ext/quickjs/repo
+	url = https://github.com/veiljs/quickjs.git
+[submodule "ext/stc/repo"]
+	path = ext/stc/repo
+	url = https://github.com/tylov/STC.git
+[submodule "ext/libuv/repo"]
+	path = ext/libuv/repo
+	url = https://github.com/libuv/libuv.git

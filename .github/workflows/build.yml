@@ -1,0 +1,44 @@
+name: veil-build
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-job:
+    if: github.event_name == 'push' && contains(toJson(github.event.commits), '[ci skip]') == false
+    name: ${{ matrix.name }}
+    defaults:
+      run:
+        shell: bash
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: MacOS (x64)
+            os: macos-11
+          - name: Windows (x64)
+            os: windows-2019
+          - name: Linux (x64)
+            os: ubuntu-20.04
+            cmake_flags: -DCMAKE_COMPILER=clang.exe -DCMAKE_CFLAGS=-static
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Install Ninja
+        uses: llvm/actions/install-ninja@main
+
+      - name: Configure
+        run: cmake -S . -B build/Debug -G Ninja -DCMAKE_BUILD_TYPE=Debug ${{ matrix.cmake_flags }}
+
+      - name: Build
+        run: cmake --build build/Debug -- -j 4
+
+      - name: Sanity Test
+        run: ./build/Debug/veil --version
