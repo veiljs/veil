@@ -32,4 +32,7 @@ target_link_libraries(veil
     qjs_a
     uv_a
     stc_a
+    m
+    pthread
+    dl
 )
