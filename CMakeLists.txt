@@ -27,6 +27,10 @@ target_include_directories(veil
     ext/stc/repo/include
 )
 
+if (LINUX)
+  set(VEIL_LIBS dl)
+endif()
+
 target_link_libraries(veil
     PRIVATE
     qjs_a
@@ -34,5 +38,5 @@ target_link_libraries(veil
     stc_a
     m
     pthread
-    dl
+    ${VEIL_LIBS}
 )
