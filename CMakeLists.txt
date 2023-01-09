@@ -12,11 +12,19 @@ add_subdirectory(ext/stc EXCLUDE_FROM_ALL)
 
 add_executable(veil
     src/main.c
+    src/veil.c
+    src/util.c
+    src/vm.c
+    src/uv.c
+    src/cfg.c
 )
 
 target_include_directories(veil
     PRIVATE
     inc
+    ext/libuv/repo/include
+    ext/quickjs/repo
+    ext/stc/repo/include
 )
 
 target_link_libraries(veil
