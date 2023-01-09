@@ -20,7 +20,7 @@ jobs:
             os: macos-11
           - name: Windows (x64)
             os: windows-2019
-            cmake_flags: -DCMAKE_COMPILER=clang.exe -DCMAKE_CFLAGS=-static
+            cmake_flags: -CMAKE_C_COMPILER=clang.exe -DCMAKE_CFLAGS=-static
           - name: Linux (x64)
             os: ubuntu-20.04
 
