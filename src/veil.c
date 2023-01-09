@@ -12,13 +12,6 @@ veil_t* veil_init() {
   CHECK_NOT_NULL(veil);
 
   veil_cfg_init(&veil->cfg);
-  veil_uv_init(&veil->uv);
-  veil_vm_init(&veil->vm);
-
-  veil->uv.microtask_context = (uv_microtask_context_t*)&veil->vm;
-  veil->uv.has_microtasks_cb = has_microtasks;
-  veil->uv.run_microtasks_cb = run_microtasks;
-
   veil->cfg.writable = true;
 
   return veil;
@@ -39,6 +32,13 @@ int veil_run(veil_t* veil) {
   CHECK_NOT_NULL(veil);
 
   veil->cfg.writable = false;
+
+  veil_vm_init(&veil->vm);
+  veil_uv_init(&veil->uv);
+
+  veil->uv.microtask_context = (uv_microtask_context_t*)&veil->vm;
+  veil->uv.has_microtasks_cb = has_microtasks;
+  veil->uv.run_microtasks_cb = run_microtasks;
 
   veil_uv_run(&veil->uv);
 
@@ -65,10 +65,15 @@ int veil_main(int argc, char** argv) {
 }
 
 static bool has_microtasks(uv_microtask_context_t* context) {
-  // TODO: check vm
-  return false;
+  veil_vm_t* vm = (veil_vm_t*)context;
+  CHECK_TRUE(vm->enabled);
+
+  return JS_IsJobPending(vm->runtime);
 }
 
 static void run_microtasks(uv_microtask_context_t* context) {
-  // TODO: drain microtasks
+  veil_vm_t* vm = (veil_vm_t*)context;
+  CHECK_TRUE(vm->enabled);
+
+  veil_vm_drain_microtasks(vm);
 }

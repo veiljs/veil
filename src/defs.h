@@ -17,8 +17,8 @@ forward_cvec(cvec_str, cstr);
 
 typedef struct veil_vm_s {
   bool enabled;
-  JSRuntime* rt;
-  JSContext* ctx;
+  JSRuntime* runtime;
+  JSContext* context;
 } veil_vm_t;
 
 typedef struct uv_microtask_context_s uv_microtask_context_t;
@@ -78,9 +78,11 @@ void veil_uv_run(veil_uv_t* uv);
 
 void veil_vm_init(veil_vm_t* vm);
 void veil_vm_drop(veil_vm_t* vm);
+void veil_vm_drain_microtasks(veil_vm_t* vm);
 
 #define CHECK(EXPR) do { if (!(EXPR)) { veil_abort(__FILE__, __LINE__, #EXPR); } } while (0)
 #define CHECK_OK(X) CHECK((X) == 0)
+#define CHECK_TRUE(X) CHECK((X) == true)
 #define CHECK_EQ(X, Y) CHECK((X) == (Y))
 #define CHECK_NULL(X) CHECK((X) == NULL)
 #define CHECK_NOT_NULL(X) CHECK((X) != NULL)
